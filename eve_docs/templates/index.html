@@ -1,0 +1,33 @@
+{% extends "bootstrap_responsive.html" %}
+
+{% block body_content %}
+
+{% for key, value  in cfg['DOMAIN'].items() %}
+  {{ accordian(key, value, cfg['LABELS']) }}
+{% endfor %}
+
+{% endblock %}
+
+
+{% macro accordian(name, content, labels) -%}
+<div class="accordion" id="accordion-{{ name }}">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" 
+         data-parent="" href="#collapse-{{ name }}{{ key }}">
+         /{{ content['url'] }}
+      </a>
+    </div>
+    <div id="collapse-{{ name }}{{ key }}" class="accordion-body collapse">
+      <div class="accordion-inner">
+{% for item in content['item_methods'] %}
+{{ item }} /{{ content['url'] }}/{id} {{ labels['item_methods'][item] }} {{ content['item_title'] }}<br />
+{% endfor %}
+{% for item in content['resource_methods'] %}
+{{ item }} /{{ content['url'] }} {{ labels['resource_methods'][item] }} {{ content['item_title'] }}<br />
+{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
