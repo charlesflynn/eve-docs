@@ -1,0 +1,13 @@
+Cerberus==0.2.0
+Eve==0.0.6
+Events==0.1.0
+Flask==0.9
+Flask-Bootstrap==2.3.1-1
+Flask-PyMongo==0.2.1
+Jinja2==2.7
+MarkupSafe==0.17
+Werkzeug==0.8.3
+argparse==1.2.1
+pymongo==2.5.1
+simplejson==3.3.0
+wsgiref==0.1.2
