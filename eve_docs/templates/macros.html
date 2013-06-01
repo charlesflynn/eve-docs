@@ -1,0 +1,43 @@
+{% macro accordian(name, content, labels, id_field) -%}
+<div class="accordion" id="accordion-{{ name }}">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" 
+         data-parent="" href="#collapse-{{ name }}{{ key }}">
+         /{{ content['url'] }}
+      </a>
+    </div>
+    <div id="collapse-{{ name }}{{ key }}" class="accordion-body collapse">
+      <div class="accordion-inner">
+
+        {% for item in content['resource_methods'] %}
+          {% set url = content['url'] %}
+          {% set label = labels['resource_methods'][item] %}
+          {{ method_details(item, url, label, id_field) }}
+        {% endfor %}
+
+        {% for item in content['item_methods'] %}
+          {% set url = '{}/{{{}}}'.format(content['url'], id_field) %}
+          {% set label = labels['item_methods'][item] %}
+          {{ method_details(item, url, label, id_field) }}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro method_details(item, url, label, id_field) -%}
+        <div class="method {{ item }}">
+          <span class="method_verb {{ item }}">
+            {{ item }}
+          </span>
+          <span class="method_path">
+            /{{ url }}
+          </span>
+          <span class="method_label">
+            {{ label }}
+          </span>
+        </div>
+{%- endmacro %}
