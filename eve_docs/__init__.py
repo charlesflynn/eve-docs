@@ -63,11 +63,24 @@ def wadlspec(type='json'):
             endpoint[item] = [{
                 'name': cfg['ID_FIELD'],
                 'style': 'template',
+                'required': True,
             }]
             if item in ('POST', 'PATCH'):
                 endpoint[item].append(params)
         wadl[url] = endpoint
         endpoint = {}
+        if 'additional_lookup' in content:
+            field = content['additional_lookup']['field']
+            lookup = '{{{0}}}'.format(field)
+            url = '/{}/{}'.format(content['url'], lookup)
+            endpoint['GET'] = [{
+                'name': field,
+                'style': 'template',
+                'type': content['schema'][field]['type'],
+                'required': True,
+            }]
+            wadl[url] = endpoint
+            endpoint = {}
         for item in content['resource_methods']:
             url = '/{}'.format(content['url'])
             endpoint[item] = []
