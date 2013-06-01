@@ -18,14 +18,14 @@ def get_cfg():
 
     labels = {
         'item_methods': {
-            'GET': 'Retrieve a single',
-            'PATCH': 'Update a single',
-            'DELETE': 'Delete a single',
+            'GET': 'Retrieve a single entry',
+            'PATCH': 'Update a single entry',
+            'DELETE': 'Delete a single entry',
         },
         'resource_methods': {
-            'GET': 'Retrieve a list of',
-            'POST': 'Create a new',
-            'DELETE': 'Delete all',
+            'GET': 'Retrieve a list of entries',
+            'POST': 'Create a new entry',
+            'DELETE': 'Delete all entries',
         },
     }
 
