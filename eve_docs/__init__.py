@@ -6,16 +6,7 @@ eve_docs = Blueprint('eve_docs', __name__,
                      template_folder='templates')
 
 
-def get_cfg():
-    fields = (
-        'API_VERSION',
-        'DOMAIN',
-        'ID_FIELD',
-        'PREFERRED_URL_SCHEME',
-        'SERVER_NAME',
-        'URL_PREFIX',
-    )
-
+def get_labels():
     labels = {
         'item_methods': {
             'GET': 'Retrieve a single entry',
@@ -28,36 +19,31 @@ def get_cfg():
             'DELETE': 'Delete all entries',
         },
     }
+    return labels
 
+
+def get_cfg():
+    fields = (
+        'API_VERSION',
+        'DOMAIN',
+        'ID_FIELD',
+        'PREFERRED_URL_SCHEME',
+        'SERVER_NAME',
+        'URL_PREFIX',
+    )
     cfg = {}
     for field in fields:
         cfg[field] = current_app.config[field]
-    cfg['LABELS'] = labels
+    cfg['LABELS'] = get_labels()
     return cfg
 
 
-@eve_docs.route('/')
-def index():
-    cfg = get_cfg()
-    return render_template('index.html', cfg=cfg)
-
-
-@eve_docs.route('/application.<type>')
-def wadlspec(type='json'):
+def get_wadl():
     cfg = get_cfg()
     wadl = {}
     id = '{{{0}}}'.format(cfg['ID_FIELD'])
     for name, content in cfg['DOMAIN'].items():
         endpoint = {}
-        params = []
-        for name, attrs in content['schema'].items():
-            required = attrs.get('required', False)
-            params.append({
-                'name': name,
-                'style': 'query',
-                'type': attrs['type'],
-                'required': required,
-            })
         for item in content['item_methods']:
             url = '/{}/{}'.format(content['url'], id)
             endpoint[item] = [{
@@ -66,7 +52,14 @@ def wadlspec(type='json'):
                 'required': True,
             }]
             if item in ('POST', 'PATCH'):
-                endpoint[item].append(params)
+                for name, attrs in content['schema'].items():
+                    required = attrs.get('required', False)
+                    endpoint[item].append({
+                        'name': name,
+                        'style': 'query',
+                        'type': attrs['type'],
+                        'required': required,
+                    })
         wadl[url] = endpoint
         endpoint = {}
         if 'additional_lookup' in content:
@@ -85,6 +78,18 @@ def wadlspec(type='json'):
             url = '/{}'.format(content['url'])
             endpoint[item] = []
         wadl[url] = endpoint
+    return wadl
+
+
+@eve_docs.route('/')
+def index():
+    cfg = get_cfg()
+    return render_template('index.html', cfg=cfg)
+
+
+@eve_docs.route('/application.<type>')
+def wadlspec(type='json'):
+    wadl = get_wadl()
     return jsonify(wadl)
 
 
