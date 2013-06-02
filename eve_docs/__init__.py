@@ -44,6 +44,15 @@ def get_wadl():
     id = '{{{0}}}'.format(cfg['ID_FIELD'])
     for name, content in cfg['DOMAIN'].items():
         endpoint = {}
+        params = []
+        for name, attrs in content['schema'].items():
+            required = attrs.get('required', False)
+            params.append({
+                'name': name,
+                'style': 'query',
+                'type': attrs['type'],
+                'required': required,
+            })
         for item in content['item_methods']:
             url = '/{}/{}'.format(content['url'], id)
             endpoint[item] = [{
@@ -52,14 +61,7 @@ def get_wadl():
                 'required': True,
             }]
             if item in ('POST', 'PATCH'):
-                for name, attrs in content['schema'].items():
-                    required = attrs.get('required', False)
-                    endpoint[item].append({
-                        'name': name,
-                        'style': 'query',
-                        'type': attrs['type'],
-                        'required': required,
-                    })
+                endpoint[item].extend(params)
         wadl[url] = endpoint
         endpoint = {}
         if 'additional_lookup' in content:
@@ -76,7 +78,8 @@ def get_wadl():
             endpoint = {}
         for item in content['resource_methods']:
             url = '/{}'.format(content['url'])
-            endpoint[item] = []
+            if item in ('POST', 'PATCH'):
+                endpoint[item] = params
         wadl[url] = endpoint
     return wadl
 
