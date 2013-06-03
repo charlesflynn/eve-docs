@@ -1,43 +1,35 @@
-{% macro accordian(name, content, labels, id_field) -%}
-<div class="accordion" id="accordion-{{ name }}">
+{% macro accordian(domain, paths) -%}
+<div class="accordion" id="accordion-{{ domain }}">
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" 
-         data-parent="" href="#collapse-{{ name }}{{ key }}">
-         /{{ content['url'] }}
+         data-parent="" href="#collapse-{{ domain }}">
+         /{{ domain }}
       </a>
     </div>
-    <div id="collapse-{{ name }}{{ key }}" class="accordion-body collapse">
+    <div id="collapse-{{ domain }}" class="accordion-body collapse">
       <div class="accordion-inner">
-
-        {% for item in content['resource_methods'] %}
-          {% set url = content['url'] %}
-          {% set label = labels['resource_methods'][item] %}
-          {{ method_details(item, url, label, id_field) }}
+        {% for path, method in paths.iteritems() %}
+          {% for method, attrs in method.iteritems() %}
+            {{ method_details(path, method, attrs) }}
+          {% endfor %}
         {% endfor %}
-
-        {% for item in content['item_methods'] %}
-          {% set url = '{}/{{{}}}'.format(content['url'], id_field) %}
-          {% set label = labels['item_methods'][item] %}
-          {{ method_details(item, url, label, id_field) }}
-        {% endfor %}
-
       </div>
     </div>
   </div>
 </div>
 {%- endmacro %}
 
-{% macro method_details(item, url, label, id_field) -%}
-        <div class="method {{ item }}">
-          <span class="method_verb {{ item }}">
-            {{ item }}
+{% macro method_details(path, method, attrs) -%}
+        <div class="method {{ method }}">
+          <span class="method_verb {{ method }}">
+            {{ method }}
           </span>
           <span class="method_path">
-            /{{ url }}
+            {{ path }}
           </span>
           <span class="method_label">
-            {{ label }}
+            {{ attrs.label }}
           </span>
         </div>
 {%- endmacro %}

@@ -9,8 +9,8 @@
 
 {% block body_content %}
 
-{% for key, value  in cfg['DOMAIN'].items() %}
-  {{ accordian(key, value, cfg['LABELS'], cfg['ID_FIELD']) }}
+{% for domain, paths  in cfg['domains'].iteritems() %}
+  {{ accordian(domain, paths) }}
 {% endfor %}
 
 {% endblock %}
