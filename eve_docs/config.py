@@ -87,9 +87,9 @@ def methods(domain, pathtype, param=None):
             ret[method]['label'] = get_label(domain, pathtype, method)
             ret[method]['params'] = []
             if method == 'POST':
-                ret[method]['params'].append(schema(domain))
+                ret[method]['params'].extend(schema(domain))
             elif method == 'PATCH':
-                ret[method]['params'].append(schema(domain))
+                ret[method]['params'].extend(schema(domain))
                 ret[method]['params'].append(identifier(domain))
             else:
                 ret[method]['params'].append(identifier(domain))
