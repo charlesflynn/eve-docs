@@ -22,7 +22,7 @@ The HTML documentation is produced using the [Flask-Bootstrap](https://github.co
 
 ### JSON output
 
-Documentation is also exposed as JSON at `url_prefix/spec.json` programmatic consumption. Example output:
+Documentation is also exposed as JSON at `url_prefix/spec.json` for programmatic consumption. Example output:
 
     {
       "base": "http://localhost:5000",
