@@ -1,15 +1,47 @@
 eve-docs
 ========
 
-Work in progress. A Flask blueprint that generates documentation for [Eve](https://github.com/nicolaiarocci/eve) APIs. When complete, will generate html documentation and WADL specs in JSON and XML. Uses the [Flask-Bootstrap](https://github.com/mbr/flask-bootstrap) blueprint for html templates.
+A Flask blueprint that generates documentation for [Eve](https://github.com/nicolaiarocci/eve) APIs in HTML and JSON formats. 
 
-Here is a sample of the html documentation produced:
-![Sample output](http://charonex.com/img/evedocs-example.png)
+### Installation
 
-The `example.py` and `settings.py` files are from Nicola Iarocci's [eve-demo](https://github.com/nicolaiarocci/eve-demo) repo. `settings.py` is untouched. `example.py` has been modified to import and activate the blueprints:
+Clone this repo into your Eve application and modify your launch script to activate the blueprints:
 
     from flask.ext.bootstrap import Bootstrap
     from eve_docs import eve_docs
     ...
     Bootstrap(app)
     app.register_blueprint(eve_docs, url_prefix='/docs')
+
+After restarting, documentation is availabile at the `url_prefix` defined in your launch script. `example.py` shows how to do this using the launch script from Nicola Iarocci's [eve-demo](https://github.com/nicolaiarocci/eve-demo) repo. 
+
+### HTML output
+
+The HTML documentation is produced using the [Flask-Bootstrap](https://github.com/mbr/flask-bootstrap) blueprint. Expand each domain to show available endpoint methods, and further expand each method to show parameter details. Example screenshot:
+![Sample output](http://charonex.com/img/evedocs-example.png)
+
+### JSON output
+
+Documentation is also exposed as JSON for programmatic consumption. Example output:
+
+    {
+      "base": "http://localhost:5000",
+      "domains": {
+        "people": {
+          "/people/{_id}": {
+            "GET": {
+              "label": "Retrieve a person",
+              "params": [
+                {
+                  "name": "_id",
+                  "type": "string",
+                  "required": true
+                }
+              ]
+              ...
+
+
+### License
+
+Released under the [MIT License](http://www.opensource.org/licenses/MIT).
+
