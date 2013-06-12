@@ -1,7 +1,7 @@
-eve-docs
+Eve-docs
 ========
 
-A Flask blueprint that generates documentation for [Eve](https://github.com/nicolaiarocci/eve) APIs in HTML and JSON formats. 
+A blueprint that generates documentation for [Eve](https://github.com/nicolaiarocci/eve) APIs in HTML and JSON formats. Eve-docs creates the documentation from your existing Eve configuration file, with no additional configuration required.
 
 ### Installation
 
@@ -22,7 +22,7 @@ The HTML documentation is produced using the [Flask-Bootstrap](https://github.co
 
 ### JSON output
 
-Documentation is also exposed as JSON for programmatic consumption. Example output:
+Documentation is also exposed as JSON at `url_prefix/spec.json` programmatic consumption. Example output:
 
     {
       "base": "http://localhost:5000",
