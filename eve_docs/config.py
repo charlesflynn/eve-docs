@@ -32,11 +32,13 @@ def schema(domain, field=None):
     else:
         params = capp.config['DOMAIN'][domain]['schema']
     for field, attrs in params.items():
-        ret.append({
+        template = {
             'name': field,
-            'type': attrs.get('type', None),
-            'required': attrs.get('required', False),
-        })
+            'type': 'None',
+            'required': False,
+        }
+        template.update(attrs)
+        ret.append(template)
     return ret
 
 

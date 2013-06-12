@@ -44,13 +44,19 @@
           <th>Parameter</th>
           <th>Type</th>
           <th>Required</th>
+          <th>Other Attributes</th>
         </tr>
       </thead>
     {% for param in attrs.params %}
       <tr>
-        <td>{{ param.name }}</td>
-        <td>{{ param.type }}</td>
-        <td>{{ param.required }}</td>
+        <td>{{ param.pop('name') }}</td>
+        <td>{{ param.pop('type') }}</td>
+        <td>{{ param.pop('required') }}</td>
+        <td>
+          {% for key, value in param.iteritems() %}
+            {{ key }}: {{ value }}<br/>
+          {% endfor %}
+        </td>
       </tr>
     {% endfor %}
     </table>
