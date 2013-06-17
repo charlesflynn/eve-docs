@@ -17,7 +17,7 @@ After restarting, documentation is availabile at the `url_prefix` defined in you
 
 ### HTML output
 
-The HTML documentation is produced using the [Flask-Bootstrap](https://github.com/mbr/flask-bootstrap) blueprint. Expand each domain to show available endpoint methods, and further expand each method to show parameter details. Example screenshot:
+The HTML documentation is produced using the [Flask-Bootstrap](https://github.com/mbr/flask-bootstrap) blueprint. Expand each domain to show available endpoint methods, and further expand each method to show parameter details. A screenshot with one method expanded follows, and you can also view a [fully expanded example](http://charonex.com/img/evedocs-example2.png). 
 ![Sample output](http://charonex.com/img/evedocs-example.png)
 
 ### JSON output
