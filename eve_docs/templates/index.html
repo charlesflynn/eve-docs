@@ -1,4 +1,4 @@
-{% extends "bootstrap_responsive.html" %}
+{% extends "bootstrap/base.html" %}
 
 {% block head -%}                                                                     
 {{super()}}                                                                            
@@ -7,11 +7,17 @@
 
 {% from 'macros.html' import accordian %}
 
-{% block body_content %}
-
-{% for domain, paths  in cfg['domains'].iteritems() %}
-  {{ accordian(domain, paths) }}
-{% endfor %}
-
+{% block content %}
+<div class="container">
+    <div class="api">
+        <h1>{{ cfg['api_name'] }}</h1>
+        <p class="lead"><a href="http://{{ cfg['server_name'] }}"><code>@{{ cfg['server_name'] }}</code></a></p>
+        <div class="panel-group">
+        {% for domain, paths  in cfg['domains'].items() %}
+            {{ accordian(domain, paths) }}
+        {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 

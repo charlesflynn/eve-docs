@@ -1,23 +1,21 @@
 {% macro accordian(domain, paths) -%}
-<div class="accordion" id="accordion-{{ domain }}">
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" 
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" 
         data-parent="accordion-{{ domain }}" href="#collapse-{{ domain }}">
          /{{ domain }}
-      </a>
+      </a></h4>
     </div>
-    <div id="collapse-{{ domain }}" class="accordion-body collapse">
-      <div class="accordion-inner">
-        {% for path, method in paths.iteritems() %}
-          {% for method, attrs in method.iteritems() %}
+    <div id="collapse-{{ domain }}" class="panel-collapse collapse">
+      <div class="panel-body">
+        {% for path, method in paths.items() %}
+          {% for method, attrs in method.items() %}
             {{ method_details(path, method, attrs) }}
           {% endfor %}
         {% endfor %}
       </div>
     </div>
   </div>
-</div>
 {%- endmacro %}
 
 {% macro method_details(path, method, attrs) -%}
@@ -38,7 +36,7 @@
     </div>
   </a>
   <div id="{{ pathid }}-{{ method }}" class="collapse">
-    <table class="table">
+    <table class="table table-striped">
       <thead>
         <tr>
           <th>Parameter</th>
@@ -53,7 +51,7 @@
         <td>{{ param.pop('type') }}</td>
         <td>{{ param.pop('required') }}</td>
         <td>
-          {% for key, value in param.iteritems() %}
+          {% for key, value in param.items() %}
             {{ key }}: {{ value }}<br/>
           {% endfor %}
         </td>
