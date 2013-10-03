@@ -3,4 +3,5 @@ LABELS = {
     'PATCH': 'Update',
     'POST': 'Create',
     'DELETE': 'Delete',
+    'PUT': 'Replace',
 }
