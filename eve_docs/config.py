@@ -1,6 +1,6 @@
 from flask import current_app as capp
 from eve.utils import home_link
-from labels import LABELS
+from .labels import LABELS
 
 
 def get_cfg():
@@ -9,9 +9,12 @@ def get_cfg():
     home = home_link()
     cfg['base'] = '{}://{}'.format(protocol, home['href'])
     cfg['domains'] = {}
+    cfg['server_name'] = capp.config['SERVER_NAME']
+    cfg['api_name'] = capp.config.get('API_NAME', 'API')
     for domain in capp.config['DOMAIN'].keys():
-        cfg['domains'][domain] = {}
-        cfg['domains'][domain] = paths(domain)
+        if capp.config['DOMAIN'][domain]['item_methods'] or capp.config['DOMAIN'][domain]['resource_methods']:
+            cfg['domains'][domain] = {}
+            cfg['domains'][domain] = paths(domain)
     return cfg
 
 

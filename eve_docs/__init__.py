@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, current_app, jsonify
-from config import get_cfg
+from .config import get_cfg
 
 
 eve_docs = Blueprint('eve_docs', __name__,
