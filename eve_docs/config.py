@@ -12,7 +12,8 @@ def get_cfg():
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
     for domain in capp.config['DOMAIN'].keys():
-        if capp.config['DOMAIN'][domain]['item_methods'] or capp.config['DOMAIN'][domain]['resource_methods']:
+        if capp.config['DOMAIN'][domain]['item_methods'] or \
+                capp.config['DOMAIN'][domain]['resource_methods']:
             cfg['domains'][domain] = {}
             cfg['domains'][domain] = paths(domain)
     return cfg
