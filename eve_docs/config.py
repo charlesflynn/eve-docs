@@ -14,8 +14,11 @@ def get_cfg():
     for domain in capp.config['DOMAIN'].keys():
         if capp.config['DOMAIN'][domain]['item_methods'] or \
                 capp.config['DOMAIN'][domain]['resource_methods']:
-            cfg['domains'][domain] = {}
-            cfg['domains'][domain] = paths(domain)
+            # hide the shadow collection for document versioning
+            if 'VERSIONS' not in capp.config or not \
+                    domain.endswith(capp.config['VERSIONS']):
+                cfg['domains'][domain] = {}
+                cfg['domains'][domain] = paths(domain)
     return cfg
 
 
