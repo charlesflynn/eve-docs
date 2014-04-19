@@ -5,9 +5,11 @@ from .labels import LABELS
 
 def get_cfg():
     cfg = {}
-    protocol = capp.config['PREFERRED_URL_SCHEME']
-    home = home_link()
-    cfg['base'] = '{}://{}'.format(protocol, home['href'])
+    base = home_link()['href']
+    if '://' not in base:
+        protocol = capp.config['PREFERRED_URL_SCHEME']
+        base = '{}://{}'.format(protocol, base['href'])
+    cfg['base'] = base
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
