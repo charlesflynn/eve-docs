@@ -5,7 +5,7 @@ LONG_DESCRIPTION = open('README.rst').read()
 
 setup(
     name='Eve-docs',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/charlesflynn/eve-docs',
     author='Charles Flynn',
     author_email='git@irab.org',
