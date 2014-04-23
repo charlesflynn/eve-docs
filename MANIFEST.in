@@ -1,1 +1,2 @@
+include LICENSE AUTHORS
 recursive-include eve_docs/templates *.html
