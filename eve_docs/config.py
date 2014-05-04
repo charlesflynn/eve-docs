@@ -8,7 +8,7 @@ def get_cfg():
     base = home_link()['href']
     if '://' not in base:
         protocol = capp.config['PREFERRED_URL_SCHEME']
-        base = '{}://{}'.format(protocol, base['href'])
+        base = '{}://{}'.format(protocol, base)
     cfg['base'] = base
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
