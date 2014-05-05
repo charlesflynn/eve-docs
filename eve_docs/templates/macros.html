@@ -36,28 +36,32 @@
     </div>
   </a>
   <div id="{{ pathid }}-{{ method }}" class="collapse">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Parameter</th>
-          <th>Type</th>
-          <th>Required</th>
-          <th>Other Attributes</th>
-        </tr>
-      </thead>
-    {% for param in attrs.params %}
-      <tr>
-        <td>{{ param.pop('name') }}</td>
-        <td>{{ param.pop('type') }}</td>
-        <td>{{ param.pop('required') }}</td>
-        <td>
-          {% for key, value in param.items() %}
-            {{ key }}: {{ value }}<br/>
-          {% endfor %}
-        </td>
-      </tr>
-    {% endfor %}
-    </table>
+    {{ params_table(attrs.params) }}
   </div>
 </div>
+{%- endmacro %}
+
+{% macro params_table(params) -%}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Type</th>
+        <th>Required</th>
+        <th>Other Attributes</th>
+      </tr>
+    </thead>
+  {% for param in params %}
+    <tr>
+      <td>{{ param.pop('name') }}</td>
+      <td>{{ param.pop('type') }}</td>
+      <td>{{ param.pop('required') }}</td>
+      <td>
+        {% for key, value in param.items() %}
+          {{ key }}: {{ value }}<br/>
+        {% endfor %}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
 {%- endmacro %}
