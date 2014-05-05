@@ -53,6 +53,13 @@ def schema(resource, field=None):
             for subfield in schema(attrs):
                 subfield['name'] = field + '.' + subfield['name']
                 ret.append(subfield)
+        # If the field defines a key schema, add any fields from the nested
+        # schema prefixed by the field name and a * to denote the wildcard
+        if 'keyschema' in attrs:
+            attrs['schema'] = attrs.pop('keyschema')
+            for subfield in schema(attrs):
+                subfield['name'] = field + '.*.' + subfield['name']
+                ret.append(subfield)
     return ret
 
 
