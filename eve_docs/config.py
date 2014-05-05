@@ -87,8 +87,8 @@ def methods(domain, pathtype, param=None):
             if method == 'POST':
                 ret[method]['params'].extend(schema(domain))
             elif method == 'PATCH':
-                ret[method]['params'].extend(schema(domain))
                 ret[method]['params'].append(identifier(domain))
+                ret[method]['params'].extend(schema(domain))
             elif pathtype == 'item':
                 ret[method]['params'].append(identifier(domain))
     return ret
