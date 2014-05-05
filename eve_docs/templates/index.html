@@ -13,7 +13,7 @@
         <h1>{{ cfg['api_name'] }}</h1>
         <p class="lead"><a href="http://{{ cfg['server_name'] }}"><code>@{{ cfg['server_name'] }}</code></a></p>
         <div class="panel-group">
-        {% for domain, paths  in cfg['domains'].items() %}
+        {% for domain, paths  in cfg['domains']|dictsort %}
             {{ accordian(domain, paths) }}
         {% endfor %}
         </div>
