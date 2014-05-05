@@ -13,19 +13,17 @@ def get_cfg():
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
-    for domain in capp.config['DOMAIN'].keys():
-        if capp.config['DOMAIN'][domain]['item_methods'] or \
-                capp.config['DOMAIN'][domain]['resource_methods']:
+    for domain, resource in capp.config['DOMAIN'].items():
+        if resource['item_methods'] or resource['resource_methods']:
             # hide the shadow collection for document versioning
             if 'VERSIONS' not in capp.config or not \
                     domain.endswith(capp.config['VERSIONS']):
-                cfg['domains'][domain] = {}
-                cfg['domains'][domain] = paths(domain)
+                cfg['domains'][domain] = paths(domain, resource)
     return cfg
 
 
-def identifier(domain):
-    name = capp.config['DOMAIN'][domain]['item_lookup_field']
+def identifier(resource):
+    name = resource['item_lookup_field']
     ret = {
         'name': name,
         'type': 'string',
@@ -34,12 +32,12 @@ def identifier(domain):
     return ret
 
 
-def schema(domain, field=None):
+def schema(resource, field=None):
     ret = []
     if field is not None:
-        params = {field: capp.config['DOMAIN'][domain]['schema'][field]}
+        params = {field: resource['schema'][field]}
     else:
-        params = capp.config['DOMAIN'][domain]['schema']
+        params = resource['schema']
     for field, attrs in params.items():
         template = {
             'name': field,
@@ -48,49 +46,63 @@ def schema(domain, field=None):
         }
         template.update(attrs)
         ret.append(template)
+        # If the field defines a schema, add any fields from the nested
+        # schema prefixed by the field name
+        if 'schema' in attrs and all(isinstance(v, dict)
+                                     for v in attrs['schema'].values()):
+            for subfield in schema(attrs):
+                subfield['name'] = field + '.' + subfield['name']
+                ret.append(subfield)
+        # If the field defines a key schema, add any fields from the nested
+        # schema prefixed by the field name and a * to denote the wildcard
+        if 'keyschema' in attrs:
+            attrs['schema'] = attrs.pop('keyschema')
+            for subfield in schema(attrs):
+                subfield['name'] = field + '.*.' + subfield['name']
+                ret.append(subfield)
     return ret
 
 
-def paths(domain):
+def paths(domain, resource):
     ret = {}
     path = '/{}'.format(domain)
     pathtype = 'resource'
-    ret[path] = methods(domain, pathtype)
+    ret[path] = methods(domain, resource, pathtype)
 
-    primary = identifier(domain)
+    primary = identifier(resource)
     path = '/{}/{}'.format(domain, pathparam(primary['name']))
     pathtype = 'item'
-    ret[path] = methods(domain, pathtype)
+    ret[path] = methods(domain, resource, pathtype)
 
-    alt = capp.config['DOMAIN'][domain].get('additional_lookup', None)
+    alt = resource.get('additional_lookup', None)
     if alt is not None:
         path = '/{}/{}'.format(domain, pathparam(alt['field']))
         pathtype = 'additional_lookup'
-        ret[path] = methods(domain, pathtype, alt['field'])
+        ret[path] = methods(domain, resource, pathtype, alt['field'])
     return ret
 
 
-def methods(domain, pathtype, param=None):
+def methods(domain, resource, pathtype, param=None):
     ret = {}
     if pathtype == 'additional_lookup':
         method = 'GET'
         ret[method] = {}
         ret[method]['label'] = get_label(domain, pathtype, method)
-        ret[method]['params'] = schema(domain, param)
+        ret[method]['params'] = schema(resource, param)
     else:
         key = '{}_methods'.format(pathtype)
-        methods = capp.config['DOMAIN'][domain][key]
+        methods = resource[key]
         for method in methods:
             ret[method] = {}
             ret[method]['label'] = get_label(domain, pathtype, method)
             ret[method]['params'] = []
             if method == 'POST':
-                ret[method]['params'].extend(schema(domain))
+                ret[method]['params'].extend(schema(resource))
             elif method == 'PATCH':
-                ret[method]['params'].append(identifier(domain))
-                ret[method]['params'].extend(schema(domain))
+                ret[method]['params'].append(identifier(resource))
+                ret[method]['params'].extend(schema(resource))
             elif pathtype == 'item':
-                ret[method]['params'].append(identifier(domain))
+                ret[method]['params'].append(identifier(resource))
     return ret
 
 
