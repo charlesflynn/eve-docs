@@ -35,9 +35,11 @@
       </span>
     </div>
   </a>
+  {% if attrs.params %}
   <div id="{{ pathid }}-{{ method }}" class="collapse">
     {{ params_table(attrs.params) }}
   </div>
+  {%- endif %}
 </div>
 {%- endmacro %}
 
