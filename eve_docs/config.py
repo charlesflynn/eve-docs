@@ -46,6 +46,13 @@ def schema(resource, field=None):
         }
         template.update(attrs)
         ret.append(template)
+        # If the field defines a schema, add any fields from the nested
+        # schema prefixed by the field name
+        if 'schema' in attrs and all(isinstance(v, dict)
+                                     for v in attrs['schema'].values()):
+            for subfield in schema(attrs):
+                subfield['name'] = field + '.' + subfield['name']
+                ret.append(subfield)
     return ret
 
 
