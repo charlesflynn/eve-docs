@@ -8,7 +8,9 @@ def get_cfg():
     base = home_link()['href']
     if '://' not in base:
         protocol = capp.config['PREFERRED_URL_SCHEME']
-        base = '{}://{}'.format(protocol, base)
+        print base
+        base = '{0}://{1}'.format(protocol, base)
+
     cfg['base'] = base
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
@@ -65,18 +67,18 @@ def schema(resource, field=None):
 
 def paths(domain, resource):
     ret = {}
-    path = '/{}'.format(domain)
+    path = '/{0}'.format(domain)
     pathtype = 'resource'
     ret[path] = methods(domain, resource, pathtype)
 
     primary = identifier(resource)
-    path = '/{}/{}'.format(domain, pathparam(primary['name']))
+    path = '/{0}/{1}'.format(domain, pathparam(primary['name']))
     pathtype = 'item'
     ret[path] = methods(domain, resource, pathtype)
 
     alt = resource.get('additional_lookup', None)
     if alt is not None:
-        path = '/{}/{}'.format(domain, pathparam(alt['field']))
+        path = '/{0}/{1}'.format(domain, pathparam(alt['field']))
         pathtype = 'additional_lookup'
         ret[path] = methods(domain, resource, pathtype, alt['field'])
     return ret
@@ -90,7 +92,7 @@ def methods(domain, resource, pathtype, param=None):
         ret[method]['label'] = get_label(domain, pathtype, method)
         ret[method]['params'] = schema(resource, param)
     else:
-        key = '{}_methods'.format(pathtype)
+        key = '{0}_methods'.format(pathtype)
         methods = resource[key]
         for method in methods:
             ret[method] = {}
@@ -107,7 +109,7 @@ def methods(domain, resource, pathtype, param=None):
 
 
 def pathparam(param):
-    return '{{{}}}'.format(param)
+    return '{{{0}}}'.format(param)
 
 
 def get_label(domain, pathtype, method):
@@ -118,4 +120,4 @@ def get_label(domain, pathtype, method):
     else:
         noun = domain
         article = 'all'
-    return '{} {} {}'.format(verb, article, noun)
+    return '{0} {1} {2}'.format(verb, article, noun)
