@@ -1,7 +1,7 @@
 from flask import current_app as capp
 from eve.utils import home_link
 from .labels import LABELS
-
+import re
 
 def get_cfg():
     cfg = {}
@@ -67,12 +67,13 @@ def schema(resource, field=None):
 
 def paths(domain, resource):
     ret = {}
-    path = '/{0}'.format(domain)
+    path = '/{0}'.format(resource.get('url', domain))
+    path = re.sub(r'<(?:[^>]+:)?([^>]+)>', '{\\1}', path)
     pathtype = 'resource'
     ret[path] = methods(domain, resource, pathtype)
 
     primary = identifier(resource)
-    path = '/{0}/{1}'.format(domain, pathparam(primary['name']))
+    path = '{0}/{1}'.format(path, pathparam(primary['name']))
     pathtype = 'item'
     ret[path] = methods(domain, resource, pathtype)
 
