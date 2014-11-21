@@ -8,14 +8,14 @@ def get_cfg():
     base = home_link()['href']
     if '://' not in base:
         protocol = capp.config['PREFERRED_URL_SCHEME']
-        print base
+        print(base)
         base = '{0}://{1}'.format(protocol, base)
 
     cfg['base'] = base
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
-    for domain, resource in capp.config['DOMAIN'].items():
+    for domain, resource in list(capp.config['DOMAIN'].items()):
         if resource['item_methods'] or resource['resource_methods']:
             # hide the shadow collection for document versioning
             if 'VERSIONS' not in capp.config or not \
@@ -40,7 +40,7 @@ def schema(resource, field=None):
         params = {field: resource['schema'][field]}
     else:
         params = resource['schema']
-    for field, attrs in params.items():
+    for field, attrs in list(params.items()):
         template = {
             'name': field,
             'type': 'None',
@@ -51,7 +51,7 @@ def schema(resource, field=None):
         # If the field defines a schema, add any fields from the nested
         # schema prefixed by the field name
         if 'schema' in attrs and all(isinstance(v, dict)
-                                     for v in attrs['schema'].values()):
+                                     for v in list(attrs['schema'].values())):
             for subfield in schema(attrs):
                 subfield['name'] = field + '.' + subfield['name']
                 ret.append(subfield)
