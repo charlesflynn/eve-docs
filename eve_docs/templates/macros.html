@@ -1,12 +1,13 @@
 {% macro accordian(domain, paths) -%}
+{% set domain_id = domain|replace("/", "_") %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" 
-        data-parent="accordion-{{ domain }}" href="#collapse-{{ domain }}">
+        data-parent="accordion-{{ domain_id }}" href="#collapse-{{ domain_id }}">
          /{{ domain }}
       </a></h4>
     </div>
-    <div id="collapse-{{ domain }}" class="panel-collapse collapse">
+    <div id="collapse-{{ domain_id }}" class="panel-collapse collapse">
       <div class="panel-body">
         {% for path, method in paths|dictsort %}
           {% for method, attrs in method.items() %}
