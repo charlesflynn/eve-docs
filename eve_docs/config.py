@@ -59,7 +59,7 @@ def schema(resource, field=None):
         # schema prefixed by the field name and a * to denote the wildcard
         if 'keyschema' in attrs:
             attrs['schema'] = attrs.pop('keyschema')
-            for subfield in schema(attrs):
+            for subfield in schema(attrs, field):
                 subfield['name'] = field + '.*.' + subfield['name']
                 ret.append(subfield)
     return ret
