@@ -12,7 +12,7 @@ def get_cfg():
 
     The Hirarchy of Information is:
     1. list all endpoints from url_map
-    2. update with data out of DOMAIN
+    2. update with data out of DOMAIN (specific fields)
 
     :returns: dict with 'base', 'server_name', 'api_name', 'domains' for
         template
