@@ -3,7 +3,20 @@ from eve.utils import home_link
 from .labels import LABELS
 import re
 
+
 def get_cfg():
+    """
+    Will get all necessary data out of the eve-app.
+    It reads 'SERVER_NAME', 'API_NAME', and'DOMAIN' out of app.config as well
+        as app.url_map
+
+    The Hirarchy of Information is:
+    1. list all endpoints from url_map
+    2. update with data out of DOMAIN (specific fields)
+
+    :returns: dict with 'base', 'server_name', 'api_name', 'domains' for
+        template
+    """
     cfg = {}
     base = home_link()['href']
     if '://' not in base:
@@ -15,13 +28,45 @@ def get_cfg():
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
+    # 1. parse rules from url_map
+    cfg['domains'] = parse_map(capp.url_map)
+    # 2. Load schemas and paths from the config and update cfg
+    domains = {}
     for domain, resource in list(capp.config['DOMAIN'].items()):
         if resource['item_methods'] or resource['resource_methods']:
             # hide the shadow collection for document versioning
             if 'VERSIONS' not in capp.config or not \
                     domain.endswith(capp.config['VERSIONS']):
-                cfg['domains'][domain] = paths(domain, resource)
+                domains[domain] = paths(domain, resource)
+    cfg['domains'].update(domains)
     return cfg
+
+
+def parse_map(url_map):
+    """
+    will extract information out of the url_map and provide them in a dict-form
+    :param url_map: an url_map in the format like app.url_map from eve
+    :returns: empty dict if url-endpoints with methods
+    """
+    ret = {}
+    for rule in url_map.iter_rules():
+        line = str(rule)
+        # first part if the rule specifies the endpoint
+        # between the first two '/' is the resource
+        resource = line.split("/")[1]
+        # the endpoint is described by a regex, but we want only the name
+        path = re.sub(r'<(?:[^>]+:)?([^>]+)>', '{\\1}', line)
+        if resource not in ret:
+            # this is the first path of this resource, create dict-entry
+            ret[resource] = {}
+        # add path to dict
+        ret[resource][path] = {}
+        for method in rule.methods:
+            if method in ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']:
+                # we only display these methods, other HTTP-Methods don't need
+                # documentation
+                ret[resource][path][method] = {}
+    return ret
 
 
 def identifier(resource):
@@ -35,6 +80,12 @@ def identifier(resource):
 
 
 def schema(resource, field=None):
+    """extracts the detailed cerberus-schema of this endpoint
+    :param resource: the resource of the endpoint
+    :param field: the field for which the schema will be returned.
+        If no field specified, return a dict for all fields of the endpoint
+    :returns: schema as dict
+    """
     ret = []
     if field is not None:
         params = {field: resource['schema'][field]}
@@ -66,6 +117,12 @@ def schema(resource, field=None):
 
 
 def paths(domain, resource):
+    """returns the documentation of all endpoints of a domain for which we have
+    descriptions in the config
+    :param domain: the domain of the endpoints
+    :param resource: the resource-subdict of config['DOMAIN']
+    :returns: dict with paths and their documentation (methods, fields)
+    """
     ret = {}
     path = '/{0}'.format(resource.get('url', domain))
     path = re.sub(r'<(?:[^>]+:)?([^>]+)>', '{\\1}', path)
@@ -86,6 +143,13 @@ def paths(domain, resource):
 
 
 def methods(domain, resource, pathtype, param=None):
+    """extracts mathods and descriptions of a sepcified path
+    :param domain: the domain of the endpoint
+    :param resource: the resource-subdict of config['DOMAIN']
+    :param pathtype: String from ('item', 'resource')
+    :param param:
+    :returns: dict of methods and their documentation (fields)
+    """
     ret = {}
     if pathtype == 'additional_lookup':
         method = 'GET'
@@ -114,6 +178,12 @@ def pathparam(param):
 
 
 def get_label(domain, pathtype, method):
+    """a description of what the method does (e.g. PATCH will upadate an item)
+    :param domain: the domain of the endpoint
+    :param pathtype: String from ('item', 'resource')
+    :param method: the method for this label
+    :returns: description as a string
+    """
     verb = LABELS[method]
     if method == 'POST' or pathtype != 'resource':
         noun = capp.config['DOMAIN'][domain]['item_title']
