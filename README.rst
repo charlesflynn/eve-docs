@@ -37,8 +37,7 @@ documentation:
 
 - 'general': A general description of the resource.
 
-- 'methods': For each of the methods eve-docs lists, you can add a 
-method-related description.
+- 'methods': For each of the methods eve-docs lists, you can add a method-related description.
 
 - 'fields': You can add a description to each field of the schema.
 
