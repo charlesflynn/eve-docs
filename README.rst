@@ -37,7 +37,8 @@ documentation:
 
 - 'general': A general description of the resource.
 
-- 'methods': For each of the methods eve-docs lists, you can add a method-related description.
+- 'methods': For each of the methods eve-docs lists, you can add a 
+method-related description.
 
 - 'fields': You can add a description to each field of the schema.
 
@@ -68,8 +69,9 @@ The HTML documentation is produced using the
 `Flask-Bootstrap <https://github.com/mbr/flask-bootstrap>`__ blueprint.
 Expand each domain to show available endpoint methods, and further
 expand each method to show parameter details. A screenshot with one
-method expanded follows, and you can also view a `fully expanded example 
-|Sample output| image:: screenshot.png  
+method expanded follows, and you can also view a `fully expanded
+example <https://github.com/hermannsblum/eve-docs/blob/extended_documentation/screenshot.png>`__. |Sample
+output|
 
 JSON output
 ~~~~~~~~~~~
@@ -101,4 +103,4 @@ License
 Released under the `MIT
 License <http://www.opensource.org/licenses/MIT>`__.
 
-.. |Sample output| image:: http://charonex.com/img/evedocs-example.png
+.. |Sample output| image:: https://github.com/hermannsblum/eve-docs/blob/extended_documentation/screenshot.png
