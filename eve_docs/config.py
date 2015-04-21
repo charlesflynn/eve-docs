@@ -5,6 +5,18 @@ import re
 
 
 def get_cfg():
+    """
+    Will get all necessary data out of the eve-app.
+    It reads 'SERVER_NAME', 'API_NAME', and'DOMAIN' out of app.config as well
+        as app.url_map
+
+    The Hirarchy of Information is:
+    1. list all endpoints from url_map
+    2. update with data out of DOMAIN
+
+    :returns: dict with 'base', 'server_name', 'api_name', 'domains' for
+        template
+    """
     cfg = {}
     base = home_link()['href']
     if '://' not in base:
@@ -16,7 +28,9 @@ def get_cfg():
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
+    # 1. parse rules from url_map
     cfg['domains'] = parse_map(capp.url_map)
+    # 2. Load schemas and paths from the config and update cfg
     domains = {}
     for domain, resource in list(capp.config['DOMAIN'].items()):
         if resource['item_methods'] or resource['resource_methods']:
