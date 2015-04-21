@@ -3,6 +3,7 @@ from eve.utils import home_link
 from .labels import LABELS
 import re
 
+
 def get_cfg():
     cfg = {}
     base = home_link()['href']
@@ -15,13 +16,43 @@ def get_cfg():
     cfg['domains'] = {}
     cfg['server_name'] = capp.config['SERVER_NAME']
     cfg['api_name'] = capp.config.get('API_NAME', 'API')
+    cfg['domains'] = parse_map(capp.url_map)
+    domains = {}
     for domain, resource in list(capp.config['DOMAIN'].items()):
         if resource['item_methods'] or resource['resource_methods']:
             # hide the shadow collection for document versioning
             if 'VERSIONS' not in capp.config or not \
                     domain.endswith(capp.config['VERSIONS']):
-                cfg['domains'][domain] = paths(domain, resource)
+                domains[domain] = paths(domain, resource)
+    cfg['domains'].update(domains)
     return cfg
+
+
+def parse_map(url_map):
+    """
+    will extract information out of the url_map and provide them in a dict-form
+    :param url_map: an url_map in the format like app.url_map from eve
+    :returns: empty dict if url-endpoints with methods
+    """
+    ret = {}
+    for rule in url_map.iter_rules():
+        line = str(rule)
+        # first part if the rule specifies the endpoint
+        # between the first two '/' is the resource
+        resource = line.split("/")[1]
+        # the endpoint is described by a regex, but we want only the name
+        path = re.sub(r'<(?:[^>]+:)?([^>]+)>', '{\\1}', line)
+        if resource not in ret:
+            # this is the first path of this resource, create dict-entry
+            ret[resource] = {}
+        # add path to dict
+        ret[resource][path] = {}
+        for method in rule.methods:
+            if method in ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']:
+                # we only display these methods, other HTTP-Methods don't need
+                # documentation
+                ret[resource][path][method] = {}
+    return ret
 
 
 def identifier(resource):
