@@ -80,6 +80,12 @@ def identifier(resource):
 
 
 def schema(resource, field=None):
+    """extracts the detailed cerberus-schema of this endpoint
+    :param resource: the resource of the endpoint
+    :param field: the field for which the schema will be returned.
+        If no field specified, return a dict for all fields of the endpoint
+    :returns: schema as dict
+    """
     ret = []
     if field is not None:
         params = {field: resource['schema'][field]}
@@ -111,6 +117,12 @@ def schema(resource, field=None):
 
 
 def paths(domain, resource):
+    """returns the documentation of all endpoints of a domain for which we have
+    descriptions in the config
+    :param domain: the domain of the endpoints
+    :param resource: the resource-subdict of config['DOMAIN']
+    :returns: dict with paths and their documentation (methods, fields)
+    """
     ret = {}
     path = '/{0}'.format(resource.get('url', domain))
     path = re.sub(r'<(?:[^>]+:)?([^>]+)>', '{\\1}', path)
@@ -131,6 +143,13 @@ def paths(domain, resource):
 
 
 def methods(domain, resource, pathtype, param=None):
+    """extracts mathods and descriptions of a sepcified path
+    :param domain: the domain of the endpoint
+    :param resource: the resource-subdict of config['DOMAIN']
+    :param pathtype: String from ('item', 'resource')
+    :param param:
+    :returns: dict of methods and their documentation (fields)
+    """
     ret = {}
     if pathtype == 'additional_lookup':
         method = 'GET'
@@ -159,6 +178,12 @@ def pathparam(param):
 
 
 def get_label(domain, pathtype, method):
+    """a description of what the method does (e.g. PATCH will upadate an item)
+    :param domain: the domain of the endpoint
+    :param pathtype: String from ('item', 'resource')
+    :param method: the method for this label
+    :returns: description as a string
+    """
     verb = LABELS[method]
     if method == 'POST' or pathtype != 'resource':
         noun = capp.config['DOMAIN'][domain]['item_title']
