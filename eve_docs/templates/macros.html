@@ -1,4 +1,4 @@
-{% macro accordian(domain, paths) -%}
+{% macro accordian(domain, definition) -%}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" 
@@ -8,9 +8,14 @@
     </div>
     <div id="collapse-{{ domain }}" class="panel-collapse collapse">
       <div class="panel-body">
-        {% for path, method in paths|dictsort %}
+        {% if 'description' in definition and 'general' in definition['description'] %}
+        <div class="panel_description">
+          {{ definition['description']['general'] }}
+        </div>
+        {%- endif %}
+        {% for path, method in definition['paths']|dictsort %}
           {% for method, attrs in method.items() %}
-            {{ method_details(path, method, attrs) }}
+            {{ method_details(definition['description'], path, method, attrs) }}
           {% endfor %}
         {% endfor %}
       </div>
@@ -18,7 +23,7 @@
   </div>
 {%- endmacro %}
 
-{% macro method_details(path, method, attrs) -%}
+{% macro method_details(description, path, method, attrs) -%}
 {% set pathid = path|replace("{", "")|replace("}", "")|replace("/", "") %}
 <div class="method {{ method }}">
   <a href="#{{ pathid }}-{{ method }}" data-toggle="collapse">
@@ -35,15 +40,22 @@
       </span>
     </div>
   </a>
-  {% if attrs.params %}
+  {% if attrs.params or description.get('methods')[method]%}
   <div id="{{ pathid }}-{{ method }}" class="collapse">
-    {{ params_table(attrs.params) }}
+    {% if 'methods' in description and method in description['methods'] %}
+      <div class="method_description">
+      {{ description['methods'].get(method) }}
+      </div>
+    {%- endif %}
+    {% if attrs.params %}
+      {{ params_table(attrs.params, description.get('fields')) }}
+    {%- endif %}
   </div>
   {%- endif %}
 </div>
 {%- endmacro %}
 
-{% macro params_table(params) -%}
+{% macro params_table(params, description) -%}
   <table class="table table-striped">
     <thead>
       <tr>
@@ -54,11 +66,17 @@
       </tr>
     </thead>
   {% for param in params %}
+    {% set name = param.pop('name') %}
     <tr>
-      <td>{{ param.pop('name') }}</td>
+      <td>{{ name }}</td>
       <td>{{ param.pop('type') }}</td>
       <td>{{ param.pop('required') }}</td>
       <td>
+        {% if description[name] %}
+          <span class="param-description">
+            {{ description[name]}}
+          </span><br>
+        {%- endif %}
         {% for key, value in param.items() %}
           {{ key }}: {{ value }}<br/>
         {% endfor %}

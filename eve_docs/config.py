@@ -3,6 +3,7 @@ from eve.utils import home_link
 from .labels import LABELS
 import re
 
+
 def get_cfg():
     cfg = {}
     base = home_link()['href']
@@ -20,7 +21,7 @@ def get_cfg():
             # hide the shadow collection for document versioning
             if 'VERSIONS' not in capp.config or not \
                     domain.endswith(capp.config['VERSIONS']):
-                cfg['domains'][domain] = paths(domain, resource)
+                cfg['domains'][domain] = endpoint_definition(domain, resource)
     return cfg
 
 
@@ -31,6 +32,19 @@ def identifier(resource):
         'type': 'string',
         'required': True,
     }
+    return ret
+
+
+def endpoint_definition(domain, resource):
+    """
+    gets the documentation of a specified endpoint
+    :param domain: the endpoint
+    :param resource: the resource-subdict of config['DOMAIN']
+    :returns: the documentation as a dict (paths, methods, fields)
+    """
+    ret = {}
+    ret['description'] = resource.get('description', {})
+    ret['paths'] = paths(domain, resource)
     return ret
 
 
