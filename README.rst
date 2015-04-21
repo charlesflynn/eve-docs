@@ -69,7 +69,7 @@ The HTML documentation is produced using the
 Expand each domain to show available endpoint methods, and further
 expand each method to show parameter details. A screenshot with one
 method expanded follows, and you can also view a `fully expanded
-example <http://charonex.com/img/evedocs-example2.png>`__. |Sample
+example <screenshot.png>`__. |Sample
 output|
 
 JSON output
