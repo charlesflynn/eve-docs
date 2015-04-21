@@ -70,7 +70,7 @@ The HTML documentation is produced using the
 Expand each domain to show available endpoint methods, and further
 expand each method to show parameter details. A screenshot with one
 method expanded follows, and you can also view a `fully expanded
-example <https://github.com/hermannsblum/eve-docs/blob/extended_documentation/screenshot.png>`__. |Sample
+example <https://github.com/hermannsblum/eve-docs/blob/extended_documentation/screenshot_expanded.png>`__. |Sample
 output|
 
 JSON output
