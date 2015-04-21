@@ -25,6 +25,43 @@ defined in your launch script. ``example.py`` shows how to do this using
 the launch script from Nicola Iarocci's
 `eve-demo <https://github.com/nicolaiarocci/eve-demo>`__ repo.
 
+
+Additional Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+You may want to add descriptions for resources to eve-docs.
+This is possible by adding an additional key 'description' to the resource 
+definition at the same level as the 'schema'.  
+Inside the description, you can add 3 different types of additional 
+documentation: 
+
+- 'general': A general description of the resource.
+
+- 'methods': For each of the methods eve-docs lists, you can add a 
+method-related description.
+
+- 'fields': You can add a description to each field of the schema.
+
+An example of this additional description can be found in example.py for 
+the 'people' resource:
+
+::  
+
+    'description': {
+            'general': 'Represents people who work at the company.',
+            'methods': {
+                'DELETE': 'DELETE may need special authorization.'
+            },
+            'fields': {
+                'role': 'The role defines the place of this person within the '
+                        'company',
+                'location': 'A dict for the address of this person.',
+                'born': 'Is datetime object, but only the date information is '
+                        'relevant.'
+            }
+        }
+
+
 HTML output
 ~~~~~~~~~~~
 
