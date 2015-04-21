@@ -106,6 +106,20 @@ people = {
         'born': {
             'type': 'datetime',
         },
+    },
+    # The key we defined for special documentaton
+    'description': {
+        'general': 'Represents people who work at the company.',
+        'methods': {
+            'DELETE': 'DELETE may need special authorization.'
+        },
+        'fields': {
+            'role': 'The role defines the place of this person within the '
+                    'company',
+            'location': 'A dict for the address of this person.',
+            'born': 'Is datetime object, but only the date information is '
+                    'relevant.'
+        }
     }
 }
 
